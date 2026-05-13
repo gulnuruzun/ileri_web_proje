@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş | OBS</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Öğrenci Bilgi Sistemi</h1>
+                <p>Hesabınıza giriş yapın</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if error %}
+                <div style="color: #ff4d4d; margin-bottom: 1rem; font-size: 0.9rem; text-align: center;">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Kullanıcı Adı</label>
+                    <input type="text" name="username" required 
+                           style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ddd; background: white !important; color: black !important;">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Şifre</label>
+                    <input type="password" name="password" required 
+                           style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ddd; background: white !important; color: black !important;">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; cursor: pointer;">
+                    Giriş Yap
+                </button>
+            </form> 
+            </div>
+    </div>
+</body>
+</html>

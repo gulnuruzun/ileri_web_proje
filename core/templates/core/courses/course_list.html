@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dersler{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <div><h1>Ders Kataloğu</h1><p>Aktif dersleri inceleyin ve kayıt olun</p></div>
+    </div>
+
+    <!-- filtreler -->
+    <form method="get" class="filter-bar">
+        <input type="text" name="search" id="courseSearch" value="{{ search }}" placeholder="Ders adı veya kodu ara..." style="flex: 1; min-width: 200px;">
+        <select name="department" onchange="this.form.submit()">
+            <option value="">Tüm Bölümler</option>
+            {% for dept in departments %}
+            <option value="{{ dept.id }}" {% if dept_filter == dept.id|stringformat:"d" %}selected{% endif %}>{{ dept.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-secondary btn-sm">Filtrele</button>
+    </form>
+
+    <!-- ders ve kontenjan -->
+    <div class="grid grid-3">
+        {% for course in courses %}
+        <div class="course-card">
+            <div class="course-code">{{ course.code }}</div>
+            <div class="course-title">{{ course.title }}</div>
+            <div class="course-meta">
+                <span>{{ course.ects_credit }} AKTS</span>
+                <span>{{ course.department.name }}</span>
+                <span>{{ course.instructor.user.first_name|default:"—" }} {{ course.instructor.user.last_name|default:"" }}</span>
+            </div>
+            <!-- kontenjan barı -->
+            <div style="margin-bottom: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">
+                    <span>Kontenjan</span>
+                    <span>{{ course.enrolled_count }}/{{ course.capacity }}</span>
+                </div>
+                <div class="progress-bar">
+                    {% widthratio course.enrolled_count course.capacity 100 as fill_pct %}
+                    {% if course.is_full %}
+                    <div class="progress-fill danger" style="--width: {{ fill_pct }}%"></div>
+                    {% elif fill_pct|add:0 > 80 %}
+                    <div class="progress-fill warning" style="--width: {{ fill_pct }}%"></div>
+                    {% else %}
+                    <div class="progress-fill" style="--width: {{ fill_pct }}%"></div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if course.has_prerequisite %}
+            <div style="font-size: 0.8rem; color: var(--warning); margin-bottom: 0.5rem;">Ön koşul: {{ course.prerequisite.code }}</div>
+            {% endif %}
+            <div class="course-card-footer">
+    <a href="{% url 'course_detail' course.code %}" class="btn btn-secondary btn-sm">Detay</a>
+
+    {% if user.is_authenticated %}
+        {% if course.enrolled_count >= course.capacity %}
+            <span class="badge badge-danger">Dolu</span>
+        {% else %}
+            <a href="{% url 'enroll_course' course.code %}" class="btn btn-primary btn-sm">Kayıt Ol</a>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}?next={% url 'enroll_course' course.code %}" class="btn btn-primary btn-sm">Giriş Yap ve Kayıt Ol</a>
+    {% endif %}
+</div>
+        </div>
+        {% empty %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <p style="font-size: 1.1rem; color: var(--text-secondary);">Henüz aktif ders bulunmuyor.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="welcome-banner">
+        <h2>Hoş geldin, {{ teacher.user.first_name|default:user.first_name }} {{ teacher.user.last_name|default:user.last_name }}</h2>
+        <p>Sicil No: {{ teacher.staff_no|default:"—" }}</p>
+    </div>
+
+    {% if teacher %}
+    <div style="margin: 1rem 0; text-align: right;">
+        <a href="{% url 'add_course' %}" class="btn btn-primary">+ Yeni Ders Ekle</a>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-3">
+        <div class="stat-card">
+            <div>
+                <div class="stat-value">{{ course_count }}</div>
+                <div class="stat-label">Verilen Ders</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div>
+                <div class="stat-value">{{ total_students }}</div>
+                <div class="stat-label">Toplam Öğrenci</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div>
+                <div class="stat-value">{{ courses|length }}</div>
+                <div class="stat-label">Ders Sayısı</div>
+            </div>
+        </div>
+    </div>
+
+    {% if courses %}
+    <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+            <h3 class="card-title">Verdiğim Dersler</h3>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ders Kodu</th>
+                        <th>Ders Adı</th>
+                        <th>AKTS</th>
+                        <th>Kayıtlı</th>
+                        <th>Kontenjan</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td><span class="badge badge-purple">{{ course.code }}</span></td>
+                        <td>{{ course.title }}</td>
+                        <td>{{ course.ects_credit }}</td>
+                        <td>{{ course.enrolled_count }}</td>
+                        <td>{{ course.capacity }}</td>
+                        <td>
+                            <a href="{% url 'grade_entry' course.code %}" class="btn btn-secondary btn-sm">Not Gir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

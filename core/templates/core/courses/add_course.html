@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Yeni Ders Ekle{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <div><h1>Yeni Ders Ekle</h1><p>Verdiğin yeni bir dersi sisteme ekle</p></div>
+        <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">← Panele Dön</a>
+    </div>
+
+    {% if errors %}
+    <div class="alert alert-danger">
+        <ul style="margin: 0; padding-left: 1.2rem;">
+            {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="card" style="max-width: 640px;">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Ders Kodu</label>
+                <input type="text" name="code" value="{{ form_data.code|default:'' }}" class="form-input" placeholder="örn: BIL101" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ders Adı</label>
+                <input type="text" name="title" value="{{ form_data.title|default:'' }}" class="form-input" placeholder="örn: Programlamaya Giriş" required>
+            </div>
+
+            <div class="grid grid-2" style="gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label">AKTS</label>
+                    <input type="number" name="ects_credit" value="{{ form_data.ects_credit|default:'5' }}" min="1" max="30" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Kontenjan</label>
+                    <input type="number" name="capacity" value="{{ form_data.capacity|default:'30' }}" min="1" class="form-input" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Bölüm (opsiyonel)</label>
+                <select name="department" class="form-input">
+                    <option value="">— Seçiniz —</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}" {% if form_data.department == dept.id|stringformat:"d" %}selected{% endif %}>{{ dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Dersi Oluştur</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

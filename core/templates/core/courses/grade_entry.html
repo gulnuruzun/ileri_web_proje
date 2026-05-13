@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Not Giriş — {{ course.code }}{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <div><h1>Not Giriş</h1><p>{{ course.code }} — {{ course.title }}</p></div>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Dashboard</a>
+    </div>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Öğrenci No</th>
+                            <th>Ad Soyad</th>
+                            <th>Vize</th>
+                            <th>Final</th>
+                            <th>Devam</th>
+                            <th>Harf Notu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in enrollments %}
+                        <tr>
+                            <td>{{ e.student.student_id }}</td>
+                            <td>{{ e.student.user.first_name }} {{ e.student.user.last_name }}</td>
+                            <td><input type="number" name="midterm_{{ e.id }}" value="{{ e.midterm_grade|default_if_none:'' }}" min="0" max="100" class="form-input" style="width: 80px;"></td>
+                            <td><input type="number" name="final_{{ e.id }}" value="{{ e.final_grade|default_if_none:'' }}" min="0" max="100" class="form-input" style="width: 80px;"></td>
+                            <td><input type="number" name="attendance_{{ e.id }}" value="{{ e.attendance_count }}" min="0" class="form-input" style="width: 80px;"></td>
+                            <td>
+                                {% if e.letter_grade %}
+                                    <span class="badge badge-info">{{ e.letter_grade }}</span>
+                                {% else %}
+                                    <span class="badge badge-warning">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Henüz kayıtlı öğrenci yok.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if enrollments %}
+            <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-primary">Notları Kaydet</button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

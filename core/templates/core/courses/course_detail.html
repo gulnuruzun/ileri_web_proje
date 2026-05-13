@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ course.code }}{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <div>
+            <h1>{{ course.code }} — {{ course.title }}</h1>
+            <p>{{ course.department.name }}</p>
+        </div>
+        <a href="{% url 'course_list' %}" class="btn btn-secondary">← Ders Listesi</a>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Ders Bilgileri</h3></div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Ders Kodu</span><p style="font-weight: 600;">{{ course.code }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Ders Adı</span><p style="font-weight: 600;">{{ course.title }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">AKTS Kredi</span><p style="font-weight: 600;">{{ course.ects_credit }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Bölüm</span><p style="font-weight: 600;">{{ course.department.name }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Öğretim Üyesi</span><p style="font-weight: 600;">{{ course.instructor.user.first_name|default:"—" }} {{ course.instructor.user.last_name|default:"" }}</p></div>
+                {% if course.has_prerequisite %}
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Ön Koşul</span><p style="font-weight: 600; color: var(--warning);">{{ course.prerequisite.code }} — {{ course.prerequisite.title }}</p></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Kontenjan Durumu</h3></div>
+            <div style="text-align: center; padding: 1rem 0;">
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-secondary);">{{ enrolled_count }}<span style="font-size: 1.2rem; color: var(--text-secondary);"> / {{ course.capacity }}</span></div>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0 1rem;">Kayıtlı Öğrenci</p>
+                <div class="progress-bar" style="height: 12px;">
+                    {% widthratio enrolled_count course.capacity 100 as width_pct %}
+                    {% if course.is_full %}
+                    <div class="progress-fill danger" style="--width: {{ width_pct }}%"></div>
+                    {% else %}
+                    <div class="progress-fill" style="--width: {{ width_pct }}%"></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if user.is_authenticated and user.role == 'student' %}
+            <div style="margin-top: 1.5rem; text-align: center;">
+                {% if is_enrolled %}
+                    <span class="badge badge-success" style="font-size: 0.9rem; padding: 8px 20px;">Bu derse kayıtlısınız</span>
+                {% elif course.enrolled_count >= course.capacity %}
+                    <span class="badge badge-danger" style="font-size: 0.9rem; padding: 8px 20px;">Kontenjan Dolu</span>
+                {% else %}
+                    <a href="{% url 'enroll_course' course.code %}" class="btn btn-primary">Derse Kayıt Ol</a>
+                {% endif %}
+            </div>
+            {% elif not user.is_authenticated %}
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <a href="{% url 'login' %}?next={% url 'course_detail' course.code %}" class="btn btn-primary">Giriş Yap ve Kayıt Ol</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

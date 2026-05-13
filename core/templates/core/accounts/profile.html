@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <div><h1>Profil Bilgileri</h1><p>Kişisel ve akademik bilgileriniz</p></div>
+    </div>
+
+    {% if message %}<div class="alert alert-success">{{ message }}</div>{% endif %}
+    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+    <div class="grid grid-2">
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Kişisel Bilgiler</h3></div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Ad Soyad</span><p style="font-weight: 600;">{{ user.first_name }} {{ user.last_name }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">E-posta</span><p style="font-weight: 600;">{{ user.email }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Kullanıcı Adı</span><p style="font-weight: 600;">{{ user.username }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Rol</span><p><span class="badge badge-purple">{{ user.get_role_display }}</span></p></div>
+            </div>
+        </div>
+
+        {% if user.role == 'student' and student %}
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Akademik Bilgiler</h3></div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Öğrenci No</span><p style="font-weight: 600;">{{ student.student_id }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Bölüm</span><p style="font-weight: 600;">{{ student.department.name|default:"Atanmamış" }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Kayıt Tarihi</span><p style="font-weight: 600;">{{ student.enrollment_date|date:"d.m.Y" }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">GPA</span><p style="font-weight: 600; color: var(--accent-secondary);">{{ student.current_gpa }}</p></div>
+            </div>
+        </div>
+        {% elif user.role == 'teacher' and teacher %}
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Akademik Bilgiler</h3></div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Sicil No</span><p style="font-weight: 600;">{{ teacher.staff_no }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Ofis Saati</span><p style="font-weight: 600;">{{ teacher.office_hour|default:"Belirtilmemiş" }}</p></div>
+                <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Bölümler</span>
+                    {% for dept in teacher.assigned_departments.all %}
+                    <span class="badge badge-info" style="margin: 2px;">{{ dept.name }}</span>
+                    {% empty %}<p style="font-weight: 600;">Atanmamış</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- profil bilgileri değiştirme -->
+    <div class="grid grid-2" style="margin-top: 1.5rem;">
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">E-posta Değiştir</h3></div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_email">
+                <div class="form-group">
+                    <label class="form-label">Yeni E-posta Adresi</label>
+                    <input type="email" name="email" value="{{ user.email }}" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Güncelle</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Şifre Değiştir</h3></div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="change_password">
+                <div class="form-group">
+                    <label class="form-label">Mevcut Şifre</label>
+                    <input type="password" name="current_password" class="form-input" placeholder="Mevcut şifrenizi giriniz" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Yeni Şifre</label>
+                    <input type="password" name="new_password" class="form-input" placeholder="En az 6 karakter" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Yeni Şifre (Tekrar)</label>
+                    <input type="password" name="confirm_password" class="form-input" placeholder="Yeni şifrenizi tekrar giriniz" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Şifreyi Değiştir</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

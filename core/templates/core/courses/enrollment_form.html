@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Ders Kaydı{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <div><h1>Ders Kaydı Onayı</h1><p>{{ course.code }} — {{ course.title }}</p></div>
+       <a href="/" class="btn btn-secondary">← Kataloğa Dön</a>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="card" style="max-width: 600px;">
+        <div class="card-header"><h3 class="card-title">Kayıt Bilgileri</h3></div>
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+            <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Ders</span><p style="font-weight: 600;">{{ course.code }} — {{ course.title }}</p></div>
+            <div><span style="color: var(--text-secondary); font-size: 0.85rem;">AKTS</span><p style="font-weight: 600;">{{ course.ects_credit }}</p></div>
+            <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Öğretim Üyesi</span><p style="font-weight: 600;">{{ course.instructor.user.first_name|default:"—" }} {{ course.instructor.user.last_name|default:"" }}</p></div>
+            <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Kontenjan</span><p style="font-weight: 600;">{{ course.enrolled_count }}/{{ course.capacity }}</p></div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-block">Kaydı Onayla</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

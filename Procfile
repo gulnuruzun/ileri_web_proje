@@ -1,0 +1,1 @@
+web: gunicorn akademik_sistem.wsgi

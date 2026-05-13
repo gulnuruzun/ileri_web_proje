@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="welcome-banner">
+        <h2>Yönetim Paneli</h2>
+        <p>Sistem genelindeki verilere buradan erişebilirsiniz. <a href="/admin/" style="color: white; text-decoration: underline;">Django Admin Paneline Git</a></p>
+    </div>
+
+    <!-- istatistikler -->
+    <div class="grid grid-4">
+        <div class="stat-card">
+                        <div>
+                <div class="stat-value">{{ student_count }}</div>
+                <div class="stat-label">Öğrenci</div>
+            </div>
+        </div>
+        <div class="stat-card">
+                        <div>
+                <div class="stat-value">{{ teacher_count }}</div>
+                <div class="stat-label">Akademisyen</div>
+            </div>
+        </div>
+        <div class="stat-card">
+                        <div>
+                <div class="stat-value">{{ course_count }}</div>
+                <div class="stat-label">Ders</div>
+            </div>
+        </div>
+        <div class="stat-card">
+                        <div>
+                <div class="stat-value">{{ department_count }}</div>
+                <div class="stat-label">Bölüm</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- öğrenciler -->
+    <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+            <h3 class="card-title">Öğrenciler</h3>
+            <a href="/admin/core/student/" class="btn btn-secondary btn-sm">Yönet</a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Öğrenci No</th><th>Ad Soyad</th><th>E-posta</th><th>Bölüm</th><th>GPA</th></tr>
+                </thead>
+                <tbody>
+                    {% for s in students %}
+                    <tr>
+                        <td>{{ s.student_id }}</td>
+                        <td>{{ s.user.first_name }} {{ s.user.last_name }}</td>
+                        <td>{{ s.user.email }}</td>
+                        <td>{{ s.department.name|default:"—" }}</td>
+                        <td><span class="badge badge-purple">{{ s.current_gpa }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Öğrenci yok</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- öğretmenler -->
+    <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+            <h3 class="card-title">Akademisyenler</h3>
+            <a href="/admin/core/teacher/" class="btn btn-secondary btn-sm">Yönet</a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Sicil No</th><th>Ad Soyad</th><th>E-posta</th><th>Ofis Saati</th></tr>
+                </thead>
+                <tbody>
+                    {% for t in teachers %}
+                    <tr>
+                        <td>{{ t.staff_no }}</td>
+                        <td>{{ t.user.first_name }} {{ t.user.last_name }}</td>
+                        <td>{{ t.user.email }}</td>
+                        <td>{{ t.office_hour|default:"—" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">Akademisyen yok</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- dersler -->
+    <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+            <h3 class="card-title">Dersler</h3>
+            <a href="/admin/core/course/" class="btn btn-secondary btn-sm">Yönet</a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Kod</th><th>Ders Adı</th><th>Bölüm</th><th>Öğretim Üyesi</th><th>AKTS</th><th>Kontenjan</th><th>Durum</th></tr>
+                </thead>
+                <tbody>
+                    {% for c in courses %}
+                    <tr>
+                        <td><span class="badge badge-purple">{{ c.code }}</span></td>
+                        <td>{{ c.title }}</td>
+                        <td>{{ c.department.name }}</td>
+                        <td>{{ c.instructor.user.first_name|default:"—" }} {{ c.instructor.user.last_name|default:"" }}</td>
+                        <td>{{ c.ects_credit }}</td>
+                        <td>{{ c.enrolled_count }}/{{ c.capacity }}</td>
+                        <td>
+                            {% if c.is_active %}
+                                <span class="badge badge-success">Aktif</span>
+                            {% else %}
+                                <span class="badge badge-danger">Pasif</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Derslerim{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="page-header">
+        <div><h1>Kayıtlı Derslerim</h1><p>Toplam {{ enrollments|length }} ders · {{ total_ects }} AKTS · GPA: {{ gpa }}</p></div>
+        <a href="{% url 'course_list' %}" class="btn btn-primary">+ Yeni Ders Ekle</a>
+    </div>
+
+    <div class="card">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ders Kodu</th>
+                        <th>Ders Adı</th>
+                        <th>Bölüm</th>
+                        <th>AKTS</th>
+                        <th>Vize</th>
+                        <th>Final</th>
+                        <th>Ortalama</th>
+                        <th>Harf Notu</th>
+                        <th>Devam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in enrollments %}
+                    <tr>
+                        <td><span class="badge badge-purple">{{ e.course.code }}</span></td>
+                        <td>{{ e.course.title }}</td>
+                        <td>{{ e.course.department.name }}</td>
+                        <td>{{ e.course.ects_credit }}</td>
+                        <td>{{ e.midterm_grade|default:"—" }}</td>
+                        <td>{{ e.final_grade|default:"—" }}</td>
+                        <td>{{ e.average|default:"—" }}</td>
+                        <td>
+                            {% if e.letter_grade %}
+                                {% if e.letter_grade == 'FF' or e.letter_grade == 'FD' %}
+                                    <span class="badge badge-danger">{{ e.letter_grade }}</span>
+                                {% elif e.letter_grade == 'AA' or e.letter_grade == 'BA' %}
+                                    <span class="badge badge-success">{{ e.letter_grade }}</span>
+                                {% else %}
+                                    <span class="badge badge-info">{{ e.letter_grade }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge badge-warning">—</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ e.attendance_count }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Henüz kayıtlı ders bulunmuyor.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
