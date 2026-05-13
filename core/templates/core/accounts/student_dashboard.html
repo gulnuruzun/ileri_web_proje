@@ -4,10 +4,6 @@
 
 {% block content %}
 <div class="main-content">
-    {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-
     <!-- karşılama ekranı -->
     <div class="welcome-banner">
         <h2>Hoş geldin, {{ student.user.first_name }} {{ student.user.last_name }}</h2>

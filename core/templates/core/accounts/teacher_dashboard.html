@@ -4,20 +4,9 @@
 
 {% block content %}
 <div class="main-content">
-    {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-
     <div class="welcome-banner">
-        <h2>Hoş geldin, {{ teacher.user.first_name|default:user.first_name }} {{ teacher.user.last_name|default:user.last_name }}</h2>
-        <p>Sicil No: {{ teacher.staff_no|default:"—" }}</p>
+        <h2>Hoş geldin, {{ teacher.user.first_name }} {{ teacher.user.last_name }}</h2>
     </div>
-
-    {% if teacher %}
-    <div style="margin: 1rem 0; text-align: right;">
-        <a href="{% url 'add_course' %}" class="btn btn-primary">+ Yeni Ders Ekle</a>
-    </div>
-    {% endif %}
 
     <div class="grid grid-3">
         <div class="stat-card">
@@ -62,7 +51,7 @@
                     <tr>
                         <td><span class="badge badge-purple">{{ course.code }}</span></td>
                         <td>{{ course.title }}</td>
-                        <td>{{ course.ects_credit }}</td>
+                        <td>{{ course.akts }}</td>
                         <td>{{ course.enrolled_count }}</td>
                         <td>{{ course.capacity }}</td>
                         <td>

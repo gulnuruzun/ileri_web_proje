@@ -41,7 +41,7 @@
                     {% widthratio course.enrolled_count course.capacity 100 as fill_pct %}
                     {% if course.is_full %}
                     <div class="progress-fill danger" style="--width: {{ fill_pct }}%"></div>
-                    {% elif fill_pct|add:0 > 80 %}
+                    {% elif fill_pct > 80 %}
                     <div class="progress-fill warning" style="--width: {{ fill_pct }}%"></div>
                     {% else %}
                     <div class="progress-fill" style="--width: {{ fill_pct }}%"></div>
