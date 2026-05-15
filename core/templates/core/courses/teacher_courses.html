@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Not Girişi{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="page-header">
+        <div><h1>Not Girişi</h1><p>Toplam {{ courses|length }} ders</p></div>
+        {% if teacher %}
+        <a href="{% url 'add_course' %}" class="btn btn-primary">+ Yeni Ders Ekle</a>
+        {% endif %}
+    </div>
+
+    {% if courses %}
+    <div class="card">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ders Kodu</th>
+                        <th>Ders Adı</th>
+                        <th>AKTS</th>
+                        <th>Kayıtlı</th>
+                        <th>Kontenjan</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td><span class="badge badge-purple">{{ course.code }}</span></td>
+                        <td>{{ course.title }}</td>
+                        <td>{{ course.ects_credit }}</td>
+                        <td>{{ course.enrolled_count }}</td>
+                        <td>{{ course.capacity }}</td>
+                        <td>
+                            <a href="{% url 'grade_entry' course.code %}" class="btn btn-secondary btn-sm">Not Gir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <p style="color: var(--text-secondary);">Henüz verdiğin ders yok.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

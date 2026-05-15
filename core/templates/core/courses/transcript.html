@@ -1,9 +1,13 @@
-{% load static %}
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Transkript{% endblock %}
 
 {% block content %}
 <div class="main-content">
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
     <div class="page-header no-print">
         <div><h1>Transkript</h1><p>Akademik not dökümanınız</p></div>
         <button id="printBtn" class="btn btn-secondary">Yazdır</button>
@@ -63,7 +67,7 @@
                         <td>{{ e.course.ects_credit }}</td>
                         <td>{{ e.midterm_grade|default:"—" }}</td>
                         <td>{{ e.final_grade|default:"—" }}</td>
-                        <td>{{ e.average|default:"—" }}</td>
+                        <td>{{ e.calculate_final_score|default:"—" }}</td>
                         <td>
                             {% if e.letter_grade %}
                                 {% if e.letter_grade == 'FF' or e.letter_grade == 'FD' %}

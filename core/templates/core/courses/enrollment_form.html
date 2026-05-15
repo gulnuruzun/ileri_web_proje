@@ -9,6 +9,14 @@
        <a href="/" class="btn btn-secondary">← Kataloğa Dön</a>
     </div>
 
+    {% if already_enrolled and not error %}
+    <div class="alert alert-warning">Bu derse zaten kayıtlısın.</div>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
     <div class="card" style="max-width: 600px;">
         <div class="card-header"><h3 class="card-title">Kayıt Bilgileri</h3></div>
         <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
@@ -18,10 +26,14 @@
             <div><span style="color: var(--text-secondary); font-size: 0.85rem;">Kontenjan</span><p style="font-weight: 600;">{{ course.enrolled_count }}/{{ course.capacity }}</p></div>
         </div>
 
+        {% if already_enrolled %}
+        <a href="{% url 'my_courses' %}" class="btn btn-secondary btn-block">Derslerime Git</a>
+        {% else %}
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary btn-block">Kaydı Onayla</button>
         </form>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

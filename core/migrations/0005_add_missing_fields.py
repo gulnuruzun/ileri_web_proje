@@ -1,0 +1,47 @@
+from django.db import migrations, models
+import django.db.models.deletion
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('core', '0004_enrollment_attendance_count_enrollment_average_and_more'),
+    ]
+
+    operations = [
+        migrations.RenameField(
+            model_name='course',
+            old_name='akts',
+            new_name='ects_credit',
+        ),
+        migrations.AddField(
+            model_name='course',
+            name='is_active',
+            field=models.BooleanField(default=True),
+        ),
+        migrations.AddField(
+            model_name='course',
+            name='department',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.department'),
+        ),
+        migrations.AddField(
+            model_name='teacher',
+            name='office_hour',
+            field=models.CharField(blank=True, max_length=100, null=True),
+        ),
+        migrations.AddField(
+            model_name='teacher',
+            name='assigned_departments',
+            field=models.ManyToManyField(blank=True, to='core.department'),
+        ),
+        migrations.AddField(
+            model_name='student',
+            name='enrollment_date',
+            field=models.DateField(auto_now_add=True, null=True),
+        ),
+        migrations.AddField(
+            model_name='student',
+            name='current_gpa',
+            field=models.FloatField(default=0.0),
+        ),
+    ]

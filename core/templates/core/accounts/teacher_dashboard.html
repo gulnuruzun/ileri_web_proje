@@ -4,11 +4,16 @@
 
 {% block content %}
 <div class="main-content">
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
     <div class="welcome-banner">
-        <h2>Hoş geldin, {{ teacher.user.first_name }} {{ teacher.user.last_name }}</h2>
+        <h2>Hoş geldin, {{ teacher.user.first_name|default:user.first_name }} {{ teacher.user.last_name|default:user.last_name }}</h2>
+        <p>Sicil No: {{ teacher.staff_no|default:"—" }}</p>
     </div>
 
-    <div class="grid grid-3">
+    <div class="grid grid-2">
         <div class="stat-card">
             <div>
                 <div class="stat-value">{{ course_count }}</div>
@@ -21,19 +26,20 @@
                 <div class="stat-label">Toplam Öğrenci</div>
             </div>
         </div>
-        <div class="stat-card">
-            <div>
-                <div class="stat-value">{{ courses|length }}</div>
-                <div class="stat-label">Ders Sayısı</div>
-            </div>
-        </div>
     </div>
 
-    {% if courses %}
+    {% if teacher %}
+    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <a href="{% url 'teacher_courses' %}" class="btn btn-secondary">Not Girişine Git</a>
+        <a href="{% url 'add_course' %}" class="btn btn-primary">+ Yeni Ders Ekle</a>
+    </div>
+
     <div class="card" style="margin-top: 1.5rem;">
         <div class="card-header">
-            <h3 class="card-title">Verdiğim Dersler</h3>
+            <h3 class="card-title">Ders Listesi</h3>
+            <a href="{% url 'teacher_courses' %}" class="btn btn-secondary btn-sm">Tümünü Gör</a>
         </div>
+        {% if courses %}
         <div class="table-container">
             <table>
                 <thead>
@@ -41,27 +47,24 @@
                         <th>Ders Kodu</th>
                         <th>Ders Adı</th>
                         <th>AKTS</th>
-                        <th>Kayıtlı</th>
-                        <th>Kontenjan</th>
-                        <th>İşlem</th>
+                        <th>Kayıtlı / Kontenjan</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for course in courses %}
+                    {% for course in courses|slice:":5" %}
                     <tr>
                         <td><span class="badge badge-purple">{{ course.code }}</span></td>
                         <td>{{ course.title }}</td>
-                        <td>{{ course.akts }}</td>
-                        <td>{{ course.enrolled_count }}</td>
-                        <td>{{ course.capacity }}</td>
-                        <td>
-                            <a href="{% url 'grade_entry' course.code %}" class="btn btn-secondary btn-sm">Not Gir</a>
-                        </td>
+                        <td>{{ course.ects_credit }}</td>
+                        <td>{{ course.enrolled_count }} / {{ course.capacity }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% else %}
+        <p style="text-align: center; color: var(--text-secondary); padding: 1.5rem 0;">Henüz verdiğin ders yok.</p>
+        {% endif %}
     </div>
     {% endif %}
 </div>

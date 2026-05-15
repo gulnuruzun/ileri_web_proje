@@ -484,7 +484,8 @@ tbody tr:hover {
     color: var(--success);
 }
 
-.alert-error {
+.alert-error,
+.alert-danger {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.2);
     color: var(--danger);
@@ -601,8 +602,8 @@ tbody tr:hover {
 
 /* --- ortalama gridi --- */
 .gpa-circle {
-    width: 120px;
-    height: 120px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
     background: conic-gradient(var(--accent-primary) calc(var(--gpa-percent) * 1%), rgba(139, 92, 246, 0.1) 0);
     display: flex;
@@ -613,8 +614,8 @@ tbody tr:hover {
 }
 
 .gpa-circle-inner {
-    width: 96px;
-    height: 96px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     background: var(--bg-card);
     display: flex;
@@ -624,13 +625,13 @@ tbody tr:hover {
 }
 
 .gpa-value {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--accent-secondary);
 }
 
 .gpa-label {
-    font-size: 0.7rem;
+    font-size: 1rem;
     color: var(--text-secondary);
 }
 
